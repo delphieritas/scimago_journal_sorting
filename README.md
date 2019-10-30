@@ -1,6 +1,6 @@
 
 # SCImago Journal Sorting
-This repo provides an ```.Rmd``` script, which uses [SCImago Journal data](https://www.scimagojr.com/journalrank.php?out=xls) to create costum journal libraries as static ```.html``` outputs, related to the original SCImago statistics.
+This repo provides a ```.Rmd``` script, which uses [SCImago Journal data](https://www.scimagojr.com/journalrank.php?out=xls) to create costum journal libraries as static ```.html``` outputs, related to the original SCImago statistics.
 
 # About SCImago Journal Rank
 
