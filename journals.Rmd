@@ -1,0 +1,121 @@
+---
+title: "Sorting Journals"
+subtitle: "Overview about Journals and their scores"
+author: "Thorsten Höser, thorsten.hoser@gmail.com, [Researchgate](https://www.researchgate.net/profile/Thorsten_Hoeser), [GitHub](https://github.com/thho)"
+
+date: "`r paste(Sys.Date())`"
+output:
+  html_document:
+    fig_caption: true
+    fig_crop: true
+    toc: true
+    toc_float: 
+      smooth_scroll: true
+      collapsed: false
+    toc_depth: 3
+    number_sections: false
+urlcolor: blue
+fontsize: 11pt
+---
+```{r searchkey, include=FALSE}
+skey <- c('14764687', '0169555X')
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+library(knitr)
+library(kableExtra)
+```
+
+# About SCImago Journal Rank
+
+"*SCImago Journal Rank (SJR indicator) is a measure of scientific influence of scholarly journals that accounts for both the number of citations received by a journal and the importance or prestige of the journals where such citations come from. A journal's SJR is a numeric value indicating the average number of weighted citations received during a selected year per document published in that journal during the previous three years. Higher SJR values are meant to indicate greater journal prestige.*" (https://en.wikipedia.org/wiki/SCImago_Journal_Rank)
+
+The data used in this overview is from https://www.scimagojr.com/journalrank.php
+
+```{r echo=FALSE, warning=FALSE}
+#get data from SJR
+#download.file("https://www.scimagojr.com/journalrank.php?out=xls", destfile = "./srjdata.csv")
+dat <- read.csv("./scimagojr 2018.csv", sep = ";", stringsAsFactors = F)#, quote = '')
+mergestring<-  read.csv("./scimagojr 2018.csv", header = FALSE, sep = "$", stringsAsFactors = F)
+mergestring <- mergestring$V1[2:nrow(mergestring)]
+```
+
+# Journals in Remote Sensing
+
+```{r echo=FALSE}
+#which('Remote Sensing' == dat$Categories)
+index <- grepl('Remote Sensing', mergestring)
+rs.jour <- dat[index, ]
+rs.jour$Title <- paste("[",rs.jour$Title, "](https://www.scimagojr.com/journalsearch.php?q=", rs.jour$Issn, ")", sep = "")
+
+rs.jour <- data.frame(rs.jour$Title,
+                      rs.jour$Issn,
+                      rs.jour$Type,
+                      rs.jour$SJR,
+                      rs.jour$H.index,
+                      rs.jour$Publisher)
+colnames(rs.jour) <- substr(colnames(rs.jour), 9, 100)
+rs.jour <- as.matrix(rs.jour)
+```
+
+```{r results="asis", echo=FALSE}
+kable(rs.jour, 
+      caption="", 
+      align = rep("c", ncol(rs.jour))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+# My Selection
+
+```{r echo=FALSE}
+#which('Remote Sensing' == dat$Categories)
+index <- sapply(skey, function (y) sapply(mergestring, function (x) grepl(y, x)))
+index <- apply(index, MARGIN = 1, FUN = function (x) Reduce("|", x))#choose "&" for AND operator for key words
+
+rs.jour <- dat[index, ]
+rs.jour$Title <- paste("[",rs.jour$Title, "](https://www.scimagojr.com/journalsearch.php?q=", rs.jour$Issn, ")", sep = "")
+
+rs.jour <- data.frame(rs.jour$Title,
+                      rs.jour$Issn,
+                      rs.jour$Type,
+                      rs.jour$SJR,
+                      rs.jour$H.index,
+                      rs.jour$Publisher)
+colnames(rs.jour) <- substr(colnames(rs.jour), 9, 100)
+rs.jour <- as.matrix(rs.jour)
+```
+
+```{r results="asis", echo=FALSE}
+kable(rs.jour, 
+      caption="", 
+      align = rep("c", ncol(rs.jour))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+# Journals from MDPI
+
+```{r echo=FALSE}
+#which('Remote Sensing' == dat$Categories)
+index <- grepl('MDPI', mergestring)
+rs.jour <- dat[index, ]
+rs.jour$Title <- paste("[",rs.jour$Title, "](https://www.scimagojr.com/journalsearch.php?q=", rs.jour$Issn, ")", sep = "")
+
+rs.jour <- data.frame(rs.jour$Title,
+                      rs.jour$Issn,
+                      rs.jour$Type,
+                      rs.jour$SJR,
+                      rs.jour$H.index,
+                      rs.jour$Publisher)
+colnames(rs.jour) <- substr(colnames(rs.jour), 9, 100)
+rs.jour <- as.matrix(rs.jour)
+```
+
+```{r results="asis", echo=FALSE}
+kable(rs.jour, 
+      caption="", 
+      align = rep("c", ncol(rs.jour))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
